@@ -26,3 +26,4 @@ l3d_test(Serialization SOURCES serialization/SerializationTests.cpp DEPS Local3D
 
 l3d_test(Rhi SOURCES rhi/RhiTests.cpp DEPS Local3D::Rhi)
 l3d_test(Platform SOURCES platform/PlatformTests.cpp DEPS Local3D::Platform)
+l3d_test(RenderGraph SOURCES rendergraph/RenderGraphTests.cpp DEPS Local3D::RenderGraph)
