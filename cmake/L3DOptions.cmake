@@ -15,8 +15,10 @@ function(l3d_setup_options)
   option(L3D_INSTALL "Generate install rules" OFF)
 
   # Graphics backends.  Vulkan is the primary backend; the null backend is
-  # always available so tests and headless tools can run without a GPU.
-  option(L3D_RHI_VULKAN "Build the Vulkan RHI backend" ON)
+  # always available so tests and headless tools can run without a GPU.  The
+  # Vulkan backend source lands with engine/rhi/src/vulkan; until then the option
+  # is off by default so a fresh checkout configures cleanly.
+  option(L3D_RHI_VULKAN "Build the Vulkan RHI backend" OFF)
   option(L3D_RHI_NULL "Build the null (CPU-only) RHI backend" ON)
 
   # Platform backends.  SDL3 provides real windowing/input; the headless

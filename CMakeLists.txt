@@ -16,11 +16,15 @@ project(
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 
 include(L3DOptions)
+
+# The options have to exist before the policy files read them: the compiler
+# policy checks L3D_ENABLE_SANITIZERS and the dependency policy checks
+# L3D_BUILD_TESTS / L3D_BUILD_EDITOR while being included.
+l3d_setup_options()
+
 include(L3DCompilerFlags)
 include(L3DModule)
 include(L3DDependencies)
-
-l3d_setup_options()
 
 find_package(Threads REQUIRED)
 

@@ -286,3 +286,30 @@ TEST_SUITE("containers.spsc_ring") {
         CHECK(sum == static_cast<long long>(kCount - 1) * kCount / 2);
     }
 }
+
+TEST_CASE("small vector releases its heap allocation") {
+    // A vector that outgrows its inline capacity must give the buffer back on
+    // destruction and on move assignment (checked by the sanitizer build).
+    SmallVector<std::string, 2> grown;
+    for (int i = 0; i < 8; ++i) {
+        grown.PushBack(std::string("element-") + std::to_string(i));
+    }
+    REQUIRE(grown.Size() == 8);
+    CHECK(grown.IsInline() == false);
+    CHECK(grown.MemoryBytes() > 0);
+
+    SmallVector<std::string, 2> target;
+    for (int i = 0; i < 6; ++i) {
+        target.PushBack(std::string("old-") + std::to_string(i));
+    }
+    CHECK(target.IsInline() == false);
+    target = std::move(grown); // Must free target's own heap buffer.
+    CHECK(target.Size() == 8);
+    CHECK(target[7] == "element-7");
+    CHECK(grown.Empty());
+
+    // Growing again after a move leaves the source usable.
+    grown.PushBack("reused");
+    CHECK(grown.Size() == 1);
+    CHECK(grown.IsInline());
+}

@@ -9,13 +9,6 @@
 
 namespace l3d {
 
-/// Default: enum classes are *not* bit flags.  Opt in with L3D_FLAGS_ENUM.
-template <typename E>
-struct IsFlagsEnum : std::false_type {};
-
-template <typename E>
-constexpr bool kIsFlagsEnum = IsFlagsEnum<E>::value;
-
 /// Convert to the underlying integer type.
 template <typename E>
 [[nodiscard]] constexpr auto ToUnderlying(E value) noexcept {
@@ -38,12 +31,11 @@ template <typename E, std::size_t N>
 
 } // namespace l3d
 
-/// Mark `EnumType` as a bit flag set, enabling |, &, ^ and ~.
+/// Mark `EnumType` as a bit flag set: enables |, &, ^, ~, |=, &= and the
+/// HasAnyFlag/HasAllFlags helpers.  The macro works at any namespace depth
+/// because it only declares functions next to the enum (found by ADL) - no
+/// template specialisation, which a macro cannot express portably.
 #define L3D_FLAGS_ENUM(EnumType)                                                                   \
-    namespace l3d {                                                                                \
-    template <>                                                                                    \
-    struct IsFlagsEnum<EnumType> : std::true_type {};                                              \
-    }                                                                                              \
     constexpr EnumType operator|(EnumType a, EnumType b) noexcept {                                \
         return static_cast<EnumType>(::l3d::ToUnderlying(a) | ::l3d::ToUnderlying(b));              \
     }                                                                                              \

@@ -55,7 +55,13 @@ public:
 
     SmallVector(SmallVector&& other) noexcept { MoveFrom(other); }
 
-    ~SmallVector() { Clear(); }
+    /// Destroys the elements and releases the heap buffer if the vector ever
+    /// outgrew its inline capacity.  Clear() alone keeps the allocation, which
+    /// is what assignment wants; only the destructor gives the memory back.
+    ~SmallVector() {
+        Clear();
+        FreeHeap();
+    }
 
     SmallVector& operator=(const SmallVector& other) {
         if (this != &other) {
@@ -215,11 +221,23 @@ public:
 private:
     [[nodiscard]] bool IsHeap() const noexcept { return capacity_ > N; }
 
+    /// Return the heap allocation, if any, and go back to inline storage.
+    void FreeHeap() noexcept {
+        if (IsHeap()) {
+            ::operator delete(heap_, std::align_val_t{alignof(T)});
+            heap_ = nullptr;
+            capacity_ = N;
+        }
+    }
+
     /// Take ownership of `other`'s contents.  When the source is on the heap we
     /// steal the allocation instead of moving element by element; otherwise we
     /// move into our own inline storage (which always has room for N elements).
     void MoveFrom(SmallVector& other) noexcept {
         if (other.IsHeap()) {
+            // Release our own heap buffer before taking over the source's, or
+            // move assignment over a grown vector would leak it.
+            FreeHeap();
             heap_ = other.heap_;
             capacity_ = other.capacity_;
             size_ = other.size_;
