@@ -1,0 +1,27 @@
+# Build trees
+build/
+build-*/
+out/
+cmake-build-*/
+
+# Editor / IDE
+.vs/
+.vscode/
+.idea/
+*.user
+*.suo
+compile_commands.json
+
+# Generated engine data
+.cache/
+*.l3dlog
+*.cooked
+intermediate/
+saved/
+
+# Shaders
+*.spv
+
+# OS noise
+.DS_Store
+Thumbs.db
