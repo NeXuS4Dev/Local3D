@@ -82,6 +82,21 @@ Two details that are easy to get wrong and are covered by tests:
   shrinks the box, which pushes slice corners outside clip space and clips
   shadows at the edge of every cascade.
 
+## The camera's up vector, and the light's, are the same bug
+
+`FrameView::Update()` has the same trap as the cascade basis: `LookAtRH` starts
+from `Cross(up, forward)`, which is the zero vector when a camera looks exactly
+along its up vector. Because `Normalize` returns zero rather than NaN for
+degenerate input, the failure is not a crash but a rank deficient view matrix and
+a black screen with nothing in the log. `Update()` substitutes the world axis
+least aligned with the view direction when the two are within ~2.5 degrees of
+parallel, and looks down -Z when the camera sits exactly on its target. The
+substitute depends only on the view direction, so it is stable frame to frame.
+
+A camera driven by a transform cannot produce this case - a rotation keeps its
+axes orthogonal - which is why it took an editor style free-look camera to
+surface. See [scene.md](scene.md) for the cases that do.
+
 ## Frame resources are created once
 
 The graph's transient resources are created when the settings, the size, or the

@@ -13,10 +13,54 @@ namespace {
     return value < min ? min : (value > max ? max : value);
 }
 
+/// Above this alignment between the view direction and the up vector the two are
+/// effectively parallel.  0.999 is about 2.5 degrees off vertical, well inside
+/// the range where Cross(up, forward) has lost every bit of usable precision.
+constexpr f32 kParallelUpAlignment = 0.999f;
+
+/// An up vector for a view direction that has no usable one.
+///
+/// LookAtRH builds its basis from Cross(up, forward).  When the two are parallel
+/// that cross product is the zero vector, and because math::Normalize returns
+/// zero for degenerate input instead of NaN the result is not an obvious crash
+/// but a rank deficient view matrix: the scene collapses and the screen goes
+/// black or smeared.  A camera pitched straight down is completely normal in a
+/// 3D editor, so this is a routine case, not a corner.
+///
+/// The world axis least aligned with the view direction is guaranteed to be at
+/// least sqrt(2/3) away from parallel, which makes the choice both safe and
+/// deterministic - the same view direction always gets the same up vector, so
+/// the rendered image does not flip between frames.
+[[nodiscard]] math::Vec3 PerpendicularUp(math::Vec3 forward) noexcept {
+    const math::Vec3 axes[3] = {math::Vec3::Right(), math::Vec3::Up(), math::Vec3::Forward()};
+    usize best = 0;
+    f32 bestAlignment = std::numeric_limits<f32>::max();
+    for (usize i = 0; i < 3; ++i) {
+        const f32 alignment = std::abs(math::Dot(axes[i], forward));
+        if (alignment < bestAlignment) {
+            bestAlignment = alignment;
+            best = i;
+        }
+    }
+    return axes[best];
+}
+
 } // namespace
 
 void FrameView::Update() noexcept {
-    view = math::Mat4::LookAtRH(position, target, up);
+    // A camera sitting exactly on its own target has no view direction at all;
+    // fall back to looking down -Z, the convention every other camera follows.
+    math::Vec3 forward = math::Normalize(target - position);
+    if (math::LengthSquared(forward) < 1e-12f) {
+        forward = math::Vec3::Forward();
+    }
+    math::Vec3 upDirection = math::Normalize(up);
+    if (std::abs(math::Dot(forward, upDirection)) > kParallelUpAlignment) {
+        upDirection = PerpendicularUp(forward);
+    }
+    // position + forward rather than `target` so LookAtRH's own normalisation
+    // reproduces exactly the direction validated above.
+    view = math::Mat4::LookAtRH(position, position + forward, upDirection);
     projection = math::Mat4::PerspectiveRH(fovYDegrees, aspect, nearPlane, farPlane);
     viewProjection = projection * view;
     frustum = math::Frustum::FromViewProjection(viewProjection);
