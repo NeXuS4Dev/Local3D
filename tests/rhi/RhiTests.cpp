@@ -420,6 +420,29 @@ TEST_SUITE("rhi.pipelines") {
         CHECK(device->ValidationErrorCount() == 1);
     }
 
+    TEST_CASE("a depth-only pipeline is valid without color formats") {
+        auto device = MakeNullDevice();
+        const auto vertexCode = FakeBytecode();
+        const auto fragmentCode = FakeBytecode();
+
+        PipelineDesc depthOnly;
+        depthOnly.shaders.PushBack(MakeShader(ShaderStage::Vertex, vertexCode, "vs"));
+        depthOnly.shaders.PushBack(MakeShader(ShaderStage::Fragment, fragmentCode, "fs"));
+        depthOnly.hasDepthAttachment = true;
+        depthOnly.depthFormat = Format::Depth32_Float;
+        auto shadowPipeline = device->CreateGraphicsPipeline(depthOnly);
+        REQUIRE(shadowPipeline.HasValue());
+        CHECK(device->ValidationErrorCount() == 0);
+
+        // Neither color nor depth is never valid.
+        PipelineDesc noAttachments;
+        noAttachments.shaders.PushBack(MakeShader(ShaderStage::Vertex, vertexCode, "vs"));
+        noAttachments.shaders.PushBack(MakeShader(ShaderStage::Fragment, fragmentCode, "fs"));
+        auto invalid = device->CreateGraphicsPipeline(noAttachments);
+        REQUIRE(invalid.HasValue());
+        CHECK(device->ValidationErrorCount() == 1);
+    }
+
     TEST_CASE("compute pipelines need a compute shader") {
         auto device = MakeNullDevice();
         const auto computeCode = FakeBytecode();

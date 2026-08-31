@@ -31,6 +31,7 @@ const FormatInfo& GetFormatInfo(Format format) noexcept {
         {16, 1, 1, false, false, false, false, "RGBA32_Float"},
         {4, 1, 1, false, false, false, false, "R10G10B10A2_UNorm"},
         {4, 1, 1, false, false, false, false, "R11G11B10_Float"},
+        {12, 1, 1, false, false, false, false, "RGB32_Float"},
         {2, 1, 1, true, false, false, false, "Depth16_UNorm"},
         {4, 1, 1, true, true, false, false, "Depth24_Stencil8"},
         {4, 1, 1, true, false, false, false, "Depth32_Float"},

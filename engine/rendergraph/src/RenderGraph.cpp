@@ -271,6 +271,17 @@ void RenderGraph::ClearPasses() {
     }
 }
 
+void RenderGraph::Reset() {
+    ClearPasses();
+    ReleaseTransientResources();
+    textures_.clear();
+    buffers_.clear();
+    textureWriters_.clear();
+    bufferWriters_.clear();
+    stats_ = CompileStats{};
+    compiled_ = false;
+}
+
 // --- Compilation -----------------------------------------------------------
 
 void RenderGraph::RunSetupCallbacks() {

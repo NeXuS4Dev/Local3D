@@ -971,8 +971,12 @@ namespace {
             device.ReportValidationError("Graphics pipeline cannot contain a compute shader");
             valid = false;
         }
-        if (desc.colorFormats.Empty()) {
-            device.ReportValidationError("Graphics pipeline declares no color attachment formats");
+        // A depth-only pipeline (shadow maps) legitimately has no color formats,
+        // which explicit APIs allow; what is never valid is declaring neither.
+        if (desc.colorFormats.Empty() && !(desc.hasDepthAttachment &&
+                                           IsDepthFormat(desc.depthFormat))) {
+            device.ReportValidationError(
+                "Graphics pipeline declares neither color nor depth attachments");
             valid = false;
         }
     }

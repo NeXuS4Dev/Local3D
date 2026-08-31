@@ -45,6 +45,8 @@ enum class Format : u16 {
     RGBA32_Float,
     R10G10B10A2_UNorm,
     R11G11B10_Float,
+    RGB32_Float, ///< Unpacked float3: the vertex attribute workhorse.
+
     Depth16_UNorm,
     Depth24_Stencil8,
     Depth32_Float,
@@ -107,6 +109,8 @@ enum class MemoryType : u8 {
 };
 
 enum class ShaderStage : u8 { Vertex, Fragment, Compute };
+/// Descriptor bindings and pipeline layouts talk about *sets* of stages.
+L3D_FLAGS_ENUM(ShaderStage)
 
 /// Shader bytecode format expected by a backend.
 enum class ShaderFormat : u8 {

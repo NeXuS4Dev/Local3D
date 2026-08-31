@@ -162,6 +162,11 @@ public:
     /// when only the pass list changes.
     void ClearPasses();
 
+    /// Forget passes *and* resources, releasing every cached transient.  Invalid
+    /// handles afterwards.  Use when the frame's resource set itself changes, for
+    /// example on a resize, so the graph does not accumulate stale entries.
+    void Reset();
+
 private:
     struct TextureEntry {
         TextureSpec spec;
