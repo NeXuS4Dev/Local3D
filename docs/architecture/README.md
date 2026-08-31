@@ -11,6 +11,8 @@ every claim here points at the file that implements it.
 | [error-handling.md](error-handling.md) | `Expected`/`Status`, validation errors, asserts |
 | [dependencies.md](dependencies.md) | What is vendored, why, and what is deliberately in-tree |
 | [ecs.md](ecs.md) | Entities, component pools, identity, scheduling |
+| [renderer.md](renderer.md) | Pass structure, instancing, lod selection, cascaded shadows |
+| [assets.md](assets.md) | Asset ids, sidecars, importers, cooking and the runtime loader |
 
 ## Ground rules
 

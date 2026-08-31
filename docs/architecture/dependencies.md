@@ -11,7 +11,7 @@ Vendored (checked into `third_party/`, licences alongside):
 | Dependency | Justification | Scope |
 | --- | --- | --- |
 | [doctest](https://github.com/doctest/doctest) | Single header test framework; compiles far faster than Catch2 and needs no build step. | tests only |
-| [stb](https://github.com/nothings/stb) | `stb_image` decodes PNG/JPEG/TGA/HDR for texture import. Writing a correct PNG decoder is not a good use of engine time. | asset import only |
+| [stb](https://github.com/nothings/stb) | `stb_image` decodes PNG/JPEG/TGA/BMP/HDR for texture import. Writing a correct PNG decoder is not a good use of engine time. `stb_image_write` is used by the tests to *generate* those inputs, so the importer is tested against real encoders. Both are compiled in their own translation unit without the engine warning policy. | asset import + tests |
 | [Vulkan-Headers](https://github.com/KhronosGroup/Vulkan-Headers) | Khronos C headers, so the Vulkan backend type checks on a machine with no SDK. | Vulkan backend only |
 | [Dear ImGui](https://github.com/ocornut/imgui) (docking) | Editor UI. Building a docking editor UI from scratch would be a project of its own. | editor only |
 

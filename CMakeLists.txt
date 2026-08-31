@@ -50,8 +50,10 @@ add_subdirectory(engine/reflection)
 add_subdirectory(engine/serialization)
 add_subdirectory(engine/platform)
 add_subdirectory(engine/ecs)
-add_subdirectory(engine/assets)
 add_subdirectory(engine/rhi)
+# The asset pipeline depends on the RHI (cooked textures carry an rhi::Format
+# and uploads go through IDevice), so it is declared after it.
+add_subdirectory(engine/assets)
 add_subdirectory(engine/rendergraph)
 add_subdirectory(engine/renderer)
 add_subdirectory(engine/scene)

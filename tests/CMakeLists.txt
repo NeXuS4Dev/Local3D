@@ -26,5 +26,11 @@ l3d_test(Serialization SOURCES serialization/SerializationTests.cpp DEPS Local3D
 
 l3d_test(Rhi SOURCES rhi/RhiTests.cpp DEPS Local3D::Rhi)
 l3d_test(Platform SOURCES platform/PlatformTests.cpp DEPS Local3D::Platform)
+l3d_test(Assets SOURCES assets/AssetTests.cpp assets/StbImageWriteImpl.cpp
+         DEPS Local3D::Assets Local3D::Rhi Local3D::Renderer Local3D::stb)
+# stb_image_write is vendored upstream code: build it without our warning policy.
+if(NOT CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
+  set_source_files_properties(assets/StbImageWriteImpl.cpp PROPERTIES COMPILE_OPTIONS "-w")
+endif()
 l3d_test(RenderGraph SOURCES rendergraph/RenderGraphTests.cpp DEPS Local3D::RenderGraph)
 l3d_test(Renderer SOURCES renderer/RendererTests.cpp DEPS Local3D::Renderer)

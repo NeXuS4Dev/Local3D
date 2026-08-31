@@ -12,4 +12,4 @@ l3d_add_module(
   SOURCES ${L3D_RENDERER_SOURCES}
   HEADERS ${L3D_RENDERER_HEADERS}
   DEPS Local3D::Core Local3D::Containers Local3D::Math Local3D::Rhi
-       Local3D::RenderGraph)
+       Local3D::Assets Local3D::RenderGraph)

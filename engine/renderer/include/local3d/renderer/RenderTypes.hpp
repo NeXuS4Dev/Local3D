@@ -6,6 +6,7 @@
 /// so a scene system, an editor viewport and a headless test can all produce
 /// them without depending on each other.
 
+#include "local3d/assets/AssetData.hpp"
 #include "local3d/core/Common.hpp"
 #include "local3d/math/Geometry.hpp"
 #include "local3d/math/Matrix.hpp"
@@ -37,21 +38,11 @@ static_assert(sizeof(GpuInstanceData) == 80, "Instance layout must match the sha
 using MeshHandle = u32;
 inline constexpr MeshHandle kInvalidMesh = 0xFFFF'FFFF;
 
-/// CPU side geometry.  The asset pipeline fills this in; the renderer uploads it.
-struct MeshData {
-    std::string name;
-    std::vector<math::Vec3> positions;
-    std::vector<math::Vec3> normals;
-    std::vector<math::Vec2> uvs;
-    std::vector<u32> indices;
-    math::Aabb bounds;
-
-    [[nodiscard]] bool IsValid() const noexcept {
-        return !positions.empty() && positions.size() == normals.size() &&
-               positions.size() == uvs.size() && indices.size() >= 3 &&
-               indices.size() % 3 == 0;
-    }
-};
+/// CPU side geometry.  The type itself lives in the asset pipeline (which
+/// produces it); the alias keeps the renderer's vocabulary unchanged and makes
+/// the dependency direction explicit: the renderer consumes asset data, the
+/// asset pipeline knows nothing about rendering.
+using MeshData = assets::MeshData;
 
 /// A renderable.  `lods` is ordered from most to least detailed; the renderer
 /// picks one by screen coverage.
