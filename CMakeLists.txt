@@ -88,8 +88,10 @@ endif()
 # working directory without an install step.
 add_custom_target(
   l3d_stage_assets ALL
-  COMMAND ${CMAKE_COMMAND} -E copy_directory_if_different
-          "${CMAKE_SOURCE_DIR}/assets" "${CMAKE_BINARY_DIR}/assets"
+  COMMAND
+    ${CMAKE_COMMAND} -DL3D_ASSETS_SOURCE_DIR=${CMAKE_SOURCE_DIR}/assets
+    -DL3D_ASSETS_BINARY_DIR=${CMAKE_BINARY_DIR}/assets -P
+    ${CMAKE_SOURCE_DIR}/cmake/L3DStageAssets.cmake
   COMMENT "Staging sample assets into the build tree")
 
 include(FeatureSummary)

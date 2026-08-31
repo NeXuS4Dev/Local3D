@@ -15,9 +15,16 @@ compile_commands.json
 # Generated engine data
 .cache/
 *.l3dlog
-*.cooked
 intermediate/
 saved/
+# Cooked output is generated from assets/ by the cooker and never committed
+cooked/
+*.l3dmesh
+*.l3dtex
+*.l3daudio
+*.l3dmat
+# Regenerable scan cache; the .l3dmeta sidecars are the source of truth
+.l3dindex.json
 
 # Shaders
 *.spv
