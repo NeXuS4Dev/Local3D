@@ -141,6 +141,30 @@ TEST_SUITE("core.expected") {
         REQUIRE(failed.IsError());
         CHECK(failed.Error().Code() == StatusCode::InvalidArgument);
     }
+
+    TEST_CASE("L3D_RETURN_IF_ERROR forwards the error unchanged") {
+        // It has to work for both the value and the void specialisation.  It was
+        // originally written to bind the result to a Status&, which does not
+        // compile against either, and nothing used it - so nothing noticed.
+        const auto valueWrapper = [](int b) -> Result<int> {
+            L3D_RETURN_IF_ERROR(Divide(100, b));
+            return 7;
+        };
+        CHECK(*valueWrapper(10) == 7);
+        const auto failedValue = valueWrapper(0);
+        REQUIRE(failedValue.IsError());
+        CHECK(failedValue.Error().Code() == StatusCode::InvalidArgument);
+        CHECK(failedValue.Error().Message() == "division by zero");
+
+        const auto voidWrapper = [](int b) -> OperationResult {
+            L3D_RETURN_IF_ERROR(Divide(100, b));
+            return {};
+        };
+        CHECK(voidWrapper(5).HasValue());
+        const auto failedVoid = voidWrapper(0);
+        REQUIRE(failedVoid.IsError());
+        CHECK(failedVoid.Error().Code() == StatusCode::InvalidArgument);
+    }
 }
 
 TEST_SUITE("core.hash") {

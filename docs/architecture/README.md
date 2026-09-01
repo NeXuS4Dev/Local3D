@@ -15,6 +15,7 @@ every claim here points at the file that implements it.
 | [assets.md](assets.md) | Asset ids, sidecars, importers, cooking and the runtime loader |
 | [scene.md](scene.md) | Scene graph, world matrix cache, draw item collection, scene files |
 | [physics.md](physics.md) | Rigid bodies, the impulse solver, manifolds, characters |
+| [animation.md](animation.md) | Poses, blending, state machines, IK and skinning matrices |
 
 ## Ground rules
 

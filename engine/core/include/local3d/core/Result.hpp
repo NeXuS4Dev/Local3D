@@ -176,11 +176,12 @@ using OperationResult = Expected<void, Status>;
     }                                                                                              \
     auto&& name = L3D_CONCAT(name, _expected_).Value()
 
-/// Propagate a Status-returning call.
+/// Propagate a Status-returning call.  Binds the result to a name for the
+/// lifetime of the block so the error can be forwarded unchanged.
 #define L3D_RETURN_IF_ERROR(expr)                                                                  \
     do {                                                                                           \
-        const ::l3d::Status& L3D_CONCAT(l3d_status_, __LINE__) = (expr);                           \
-        if (L3D_CONCAT(l3d_status_, __LINE_).IsError()) {                                          \
-            return L3D_CONCAT(l3d_status_, __LINE__);                                              \
+        const auto& L3D_CONCAT(l3d_result_, __LINE__) = (expr);                                    \
+        if (L3D_CONCAT(l3d_result_, __LINE__).IsError()) {                                         \
+            return ::l3d::Unexpected(L3D_CONCAT(l3d_result_, __LINE__).Error());                   \
         }                                                                                          \
     } while (false)

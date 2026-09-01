@@ -36,3 +36,4 @@ l3d_test(RenderGraph SOURCES rendergraph/RenderGraphTests.cpp DEPS Local3D::Rend
 l3d_test(Renderer SOURCES renderer/RendererTests.cpp DEPS Local3D::Renderer)
 l3d_test(Scene SOURCES scene/SceneTests.cpp DEPS Local3D::Scene)
 l3d_test(Physics SOURCES physics/PhysicsTests.cpp DEPS Local3D::Physics)
+l3d_test(Animation SOURCES animation/AnimationTests.cpp DEPS Local3D::Animation)
