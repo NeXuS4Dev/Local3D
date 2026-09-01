@@ -14,6 +14,7 @@ every claim here points at the file that implements it.
 | [renderer.md](renderer.md) | Pass structure, instancing, lod selection, cascaded shadows |
 | [assets.md](assets.md) | Asset ids, sidecars, importers, cooking and the runtime loader |
 | [scene.md](scene.md) | Scene graph, world matrix cache, draw item collection, scene files |
+| [physics.md](physics.md) | Rigid bodies, the impulse solver, manifolds, characters |
 
 ## Ground rules
 
